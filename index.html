@@ -58,15 +58,10 @@
   .card { background: #fff; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 10px 30px rgba(0, 0, 0, .28); scroll-margin-top: 16px; }
   .field { display: flex; flex-direction: column; gap: 6px; }
   .field label { font-size: 13px; font-weight: 700; }
-  .input-wrap { position: relative; }
   .input { width: 100%; height: 48px; padding: 0 14px; border: 1px solid #C5CFE3; border-radius: 10px; font: inherit; font-size: 16px; color: var(--ink); background: #fff; }
   .input::placeholder { color: #6B7489; }
   .input:focus { outline: none; border-color: var(--mid); box-shadow: 0 0 0 3px rgba(44, 95, 173, .22); }
   .input[aria-invalid="true"] { border-color: #C2410C; }
-  .input-wrap .input { padding-right: 52px; }
-  .toggle-pw { position: absolute; top: 2px; right: 2px; width: 44px; height: 44px; border: 0; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--muted-2); cursor: pointer; }
-  .toggle-pw[aria-pressed="true"] { color: var(--mid); }
-  .toggle-pw:focus-visible { outline-offset: -3px; }
 
   .btn { display: flex; align-items: center; justify-content: center; width: 100%; height: 52px; border: 0; border-radius: 12px; background: var(--gold); color: var(--navy); font: inherit; font-size: 17px; font-weight: 800; text-decoration: none; cursor: pointer; }
   .btn:hover { filter: brightness(1.05); }
@@ -169,15 +164,6 @@
         <div class="field">
           <label for="kr-email" data-i18n="email">이메일 주소</label>
           <input class="input" id="kr-email" type="email" inputmode="email" placeholder="name@example.com" autocomplete="off">
-        </div>
-        <div class="field">
-          <label for="kr-password" data-i18n="password">비밀번호</label>
-          <div class="input-wrap">
-            <input class="input" id="kr-password" type="password" placeholder="비밀번호 입력" data-i18n-ph="passwordPh" autocomplete="new-password">
-            <button type="button" class="toggle-pw" id="toggle-pw" aria-label="비밀번호 표시" aria-pressed="false">
-              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            </button>
-          </div>
         </div>
         <button type="submit" class="btn" data-i18n="signup">가입하기</button>
         <p class="consent" data-i18n-html="consent">가입하기를 누르면 <a href="#terms">프로모션 약관</a> 및 <a href="#terms">개인정보처리방침</a>에 동의하는 것으로 간주됩니다.</p>
@@ -312,8 +298,6 @@
       artAlt: 'Up to $700 cashback',
       formLabel: 'Sign up',
       email: 'Email address',
-      password: 'Password',
-      passwordPh: 'Enter password',
       signup: 'Sign up',
       consent: 'By tapping Sign up, you are deemed to agree to the <a href="#terms">Promotion Terms</a> and <a href="#terms">Privacy Policy</a>.',
       trust1: 'Regulated and licensed',
@@ -347,15 +331,13 @@
       sticky: 'Up to <strong>$700</strong> cashback'
     };
     var MSG = {
-      ko: { errEmail: '올바른 이메일 주소를 입력해 주세요.', errPwd: '비밀번호를 입력해 주세요.', info: '검토용 초안입니다. 실제 가입은 진행되지 않으며, 입력하신 정보는 전송되거나 저장되지 않습니다.', show: '비밀번호 표시', hide: '비밀번호 숨기기' },
-      en: { errEmail: 'Please enter a valid email address.', errPwd: 'Please enter your password.', info: 'This is a review draft. No account is created, and nothing you enter is sent or saved.', show: 'Show password', hide: 'Hide password' }
+      ko: { errEmail: '올바른 이메일 주소를 입력해 주세요.', info: '검토용 초안입니다. 실제 페이지에서는 기존 고객은 클라이언트 포털로, 신규 고객은 계좌 개설 단계로 이동합니다. 입력하신 정보는 전송되거나 저장되지 않습니다.' },
+      en: { errEmail: 'Please enter a valid email address.', info: 'This is a review draft. On the live page, existing clients go to the client portal and new clients go to account opening. Nothing you enter is sent or saved.' }
     };
 
     var form = document.getElementById('signup');
     var email = document.getElementById('kr-email');
-    var pwd = document.getElementById('kr-password');
     var status = document.getElementById('form-status');
-    var toggle = document.getElementById('toggle-pw');
     var sticky = document.getElementById('sticky-cta');
     var langBtn = document.getElementById('lang-toggle');
     var langText = document.getElementById('lang-toggle-text');
@@ -382,7 +364,6 @@
       each('data-i18n-ph', function (el) { el.setAttribute('placeholder', d[el.getAttribute('data-i18n-ph')]); });
       each('data-i18n-alt', function (el) { el.setAttribute('alt', d[el.getAttribute('data-i18n-alt')]); });
       each('data-i18n-aria', function (el) { el.setAttribute('aria-label', d[el.getAttribute('data-i18n-aria')]); });
-      toggle.setAttribute('aria-label', pwd.type === 'password' ? MSG[next].show : MSG[next].hide);
       status.className = 'status';
       status.textContent = '';
       langText.textContent = next === 'en' ? 'KR' : 'EN';
@@ -406,28 +387,13 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       email.removeAttribute('aria-invalid');
-      pwd.removeAttribute('aria-invalid');
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
         email.setAttribute('aria-invalid', 'true');
         showStatus('error', MSG[lang].errEmail);
         email.focus();
         return;
       }
-      if (!pwd.value) {
-        pwd.setAttribute('aria-invalid', 'true');
-        showStatus('error', MSG[lang].errPwd);
-        pwd.focus();
-        return;
-      }
-      pwd.value = '';
       showStatus('info', MSG[lang].info);
-    });
-
-    toggle.addEventListener('click', function () {
-      var show = pwd.type === 'password';
-      pwd.type = show ? 'text' : 'password';
-      toggle.setAttribute('aria-pressed', show ? 'true' : 'false');
-      toggle.setAttribute('aria-label', show ? MSG[lang].hide : MSG[lang].show);
     });
 
     function goToForm(e) {
