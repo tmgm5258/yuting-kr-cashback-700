@@ -74,8 +74,12 @@
   .status.is-error { padding: 10px 12px; background: #FDECEC; color: #9A2A0D; }
   .status.is-info { padding: 10px 12px; background: #EAF3FF; color: #1D4B8F; }
 
-  .consent { margin: 0; text-align: center; font-size: 12px; line-height: 1.6; color: var(--muted-2); }
-  .consent a { color: var(--mid); font-weight: 700; }
+  .agree { display: flex; flex-direction: column; gap: 10px; }
+  .check { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.55; color: var(--ink); cursor: pointer; }
+  .check input { flex: 0 0 auto; width: 20px; height: 20px; margin: 0; accent-color: var(--mid); cursor: pointer; }
+  .check input[aria-invalid="true"] { outline: 2px solid #C2410C; outline-offset: 2px; }
+  .check strong { font-weight: 700; color: var(--navy); }
+  .check a { color: var(--mid); font-weight: 700; }
 
   .trust { margin: 0; padding: 0; list-style: none; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 18px; }
   .trust li { display: flex; align-items: center; gap: 6px; font-size: 13px; color: rgba(255, 255, 255, .9); }
@@ -168,8 +172,17 @@
           <label for="kr-email" data-i18n="email">이메일 주소</label>
           <input class="input" id="kr-email" type="email" inputmode="email" placeholder="name@example.com" autocomplete="off">
         </div>
+        <div class="agree">
+          <label class="check">
+            <input type="checkbox" id="agree-terms" required aria-required="true">
+            <span data-i18n-html="agreeTerms"><strong>[필수]</strong> <a href="#terms">프로모션 약관</a> 및 <a href="#terms">개인정보처리방침</a>에 동의합니다</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="agree-mkt">
+            <span data-i18n-html="agreeMkt"><strong>[선택]</strong> 향후 프로모션 및 마케팅 정보 수신에 동의합니다</span>
+          </label>
+        </div>
         <button type="submit" class="btn" data-i18n="signup">가입하기</button>
-        <p class="consent" data-i18n-html="consent">가입하기를 누르면 <a href="#terms">프로모션 약관</a> 및 <a href="#terms">개인정보처리방침</a>에 동의하는 것으로 간주됩니다.</p>
         <p class="status" id="form-status" role="status"></p>
       </form>
 
@@ -280,7 +293,7 @@
 
   <footer class="footer" id="terms">
     <p class="terms" data-i18n="footTc">*약관이 적용됩니다.</p>
-    <p data-i18n="disclaimer">외환 및 CFD 증거금 거래는 높은 위험을 수반하며 모든 투자자에게 적합하지 않을 수 있습니다. 귀하는 계약의 기초 자산을 소유하거나 그로부터 이익을 얻지 않습니다. 본 자료에서 제공되는 금융 상품을 거래하기 전에 당사 웹사이트의 고객 계약서 및 기타 공시 자료를 주의 깊게 읽어 주십시오. 위 정보는 Trademax Global Limited(VFSC 40356)가 제공합니다.</p>
+    <p data-i18n="disclaimer">외환 및 CFD 증거금 거래는 높은 위험을 수반하며 모든 투자자에게 적합하지 않을 수 있습니다. 귀하는 기초 자산에 대한 소유권이나 어떠한 권리도 갖지 않습니다. 본 자료에서 제공되는 금융 상품을 거래하기 전에 당사 웹사이트의 고객 계약서 및 기타 공시 자료를 주의 깊게 읽어 주십시오. 위 정보는 Trademax Global Limited(VFSC 40356)가 제공합니다.</p>
   </footer>
 
 </div>
@@ -302,7 +315,8 @@
       formLabel: 'Sign up',
       email: 'Email address',
       signup: 'Sign up',
-      consent: 'By tapping Sign up, you are deemed to agree to the <a href="#terms">Promotion Terms</a> and <a href="#terms">Privacy Policy</a>.',
+      agreeTerms: '<strong>[Required]</strong> I agree to the <a href="#terms">Promotion Terms</a> and <a href="#terms">Privacy Policy</a>',
+      agreeMkt: '<strong>[Optional]</strong> I agree to receive future promotions and marketing updates',
       trust1: 'Regulated and licensed',
       trust2: '24/7 customer support',
       howTitle: 'How to get your cashback',
@@ -330,16 +344,17 @@
       why3: '24/7 customer support',
       why4: 'The best trading conditions',
       footTc: '*T&Cs apply.',
-      disclaimer: 'Trading foreign exchange and CFDs on margin carries a high level of risk and may not be suitable for all investors. You do not own or benefit from the underlying assets of the contract. Please read the Client Agreement and other disclosures on our website carefully before deciding to trade the financial products offered in this material. The above information is provided by Trademax Global Limited (VFSC 40356).',
+      disclaimer: 'Trading foreign exchange and CFDs on margin carries a high level of risk and may not be suitable for all investors. You do not own, or have, any interest in the underlying asset. Please read the Client Agreement and other disclosures on our website carefully before deciding to trade the financial products offered in this material. The above information is provided by Trademax Global Limited (VFSC 40356).',
       sticky: 'Up to <strong>$700</strong> cashback'
     };
     var MSG = {
-      ko: { errEmail: '올바른 이메일 주소를 입력해 주세요.', info: '검토용 초안입니다. 실제 페이지에서는 기존 고객은 클라이언트 포털로, 신규 고객은 계좌 개설 단계로 이동합니다. 입력하신 정보는 전송되거나 저장되지 않습니다.' },
-      en: { errEmail: 'Please enter a valid email address.', info: 'This is a review draft. On the live page, existing clients go to the client portal and new clients go to account opening. Nothing you enter is sent or saved.' }
+      ko: { errEmail: '올바른 이메일 주소를 입력해 주세요.', errAgree: '가입하려면 프로모션 약관 및 개인정보처리방침에 동의해 주세요.', info: '검토용 초안입니다. 실제 페이지에서는 기존 고객은 클라이언트 포털로, 신규 고객은 계좌 개설 단계로 이동합니다. 입력하신 정보는 전송되거나 저장되지 않습니다.' },
+      en: { errEmail: 'Please enter a valid email address.', errAgree: 'To sign up, please agree to the Promotion Terms and Privacy Policy.', info: 'This is a review draft. On the live page, existing clients go to the client portal and new clients go to account opening. Nothing you enter is sent or saved.' }
     };
 
     var form = document.getElementById('signup');
     var email = document.getElementById('kr-email');
+    var agreeTerms = document.getElementById('agree-terms');
     var status = document.getElementById('form-status');
     var sticky = document.getElementById('sticky-cta');
     var langBtn = document.getElementById('lang-toggle');
@@ -387,16 +402,32 @@
     }
 
     // Draft only: nothing typed here is sent or stored anywhere.
+    // The required box starts unticked and must be ticked before signing up; the marketing box is optional.
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       email.removeAttribute('aria-invalid');
+      agreeTerms.removeAttribute('aria-invalid');
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
         email.setAttribute('aria-invalid', 'true');
         showStatus('error', MSG[lang].errEmail);
         email.focus();
         return;
       }
+      if (!agreeTerms.checked) {
+        agreeTerms.setAttribute('aria-invalid', 'true');
+        showStatus('error', MSG[lang].errAgree);
+        agreeTerms.focus();
+        return;
+      }
       showStatus('info', MSG[lang].info);
+    });
+
+    agreeTerms.addEventListener('change', function () {
+      if (agreeTerms.checked && agreeTerms.getAttribute('aria-invalid') === 'true') {
+        agreeTerms.removeAttribute('aria-invalid');
+        status.className = 'status';
+        status.textContent = '';
+      }
     });
 
     function goToForm(e) {
